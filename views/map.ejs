@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Mapa Sanca</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
+  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  crossorigin=""/>
+  <link rel="stylesheet" href="/public/style.css">
+  <link rel="stylesheet" href="/public/font-awesome.css">
+
+</head>
+<body>
+  <header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Pé na Rua</a>
+    </div>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navBar" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navBar">
+      <ul class="navbar-nav navbar-sidenav">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Painel Administrativo</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="/statistics/LTIA">Statistics</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/comparing/LTIA">Comparing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/">About</a>
+        </li> -->
+      </ul>
+    </div>
+  </nav>
+</header>
+  <div class="container-fluid">
+    <!--Cards info -->
+			<div class="cards-info">
+				<div class="row center-cols center-align">
+					<div class="col-md-2">
+						<div class="card">
+							<div class="card-body">
+								<h6 class="card-title">
+									<i class="fa fa-bar-chart-o"></i>
+									Nº Usuários.
+								</h6>
+								<h4 class="card-subtitle mb-2">4</h4>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="card">
+							<div class="card-body">
+								<h6 class="card-title">
+									<i class="fa fa-arrow-up"></i>
+									Registros
+								</h6>
+								<h4 class="card-subtitle mb-2">3</h4>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="card">
+							<div class="card-body">
+								<h6 class="card-title">
+									<i class="fa fa-child"></i>
+									Km médio
+								</h6>
+								<h4 class="card-subtitle mb-2">1.7 km</h4>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="card">
+							<div class="card-body">
+								<h6 class="card-title">
+									<i class="fa fa-star"></i>
+									Duração média
+								</h6>
+								<h4 class="card-subtitle mb-2" id="vendor">0.4 h</h4>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="card">
+							<div class="card-body">
+								<h6 class="card-title">
+									<i class="fa fa-sign-in"></i>
+									Mais visitado
+								</h6>
+								<h4 class="card-subtitle mb-2">Pça. da paz</h4>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="card">
+							<div class="card-body">
+								<h6 class="card-title">
+									<i class="fa fa-database"></i>
+									Alertas
+								</h6>
+								<h4 class="card-subtitle mb-2">3</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+    <div class="row maoe">
+    <div id="mapid" class="col-md-8" style="height: 500px"></div>
+    <div class="infos col-md-4">
+      <div><span class="font-bold">Autor: </span><span id="autor"></span></div>
+      <div><span class="font-bold">Data: </span><span id="data"></span></div>
+      <div><span class="font-bold">Categoria: </span><span id="categoria"></span></div>
+      <div><span class="font-bold">Descrição: </span><span id="descricao"></span></div>
+      <div><span class="font-bold" style="margin-right: 10px;">Ações: </span><span id="acoes"></span></div>
+      <div><span class="font-bold">Relatos: </span><span id="relatos"></span></div>
+    </div>
+  </div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+   integrity="sha512-nMMmRyTVoLYqjP9hrbed9S+FzjZHW5gY1TWCHA5ckwXZBadntCNs8kEqAWdrb9O7rxbCaA4lKTIWjDXZxflOcA=="
+   crossorigin=""></script>
+  <script>
+    let mymap = L.map("mapid").setView([-22.329583,-49.0638257],12);
+    var LeafIcon = L.Icon.extend({
+        options: {
+            iconSize:     [25, 35],
+            // shadowSize:   [50, 64],
+            iconAnchor:   [22, 94],
+            // shadowAnchor: [4, 62],
+            popupAnchor:  [-3, -76]
+        }
+    });
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>',
+    }).addTo(mymap)
+    let coordinates = <%-JSON.stringify(results)%>;
+    for(let i = 0; i < coordinates.length; i++){
+      let text = '<div><span style="font-weight: 600; font-size: 0.9rem;">Categoria: </span><span style="font-size: 0.9rem;">' + coordinates[i].category + '</span></div><div><span style="font-weight: 600;font-size: 0.9rem;">Descrição: </span><span style="font-size: 0.9rem;">' + coordinates[i].marker + '</span></div>';
+      if(coordinates[i].category == 'alerta'){
+        text += '<div><button>Resolver</button>';
+        text += '<button class="btn">Apagar</button></div>';
+      }
+      L.marker([coordinates[i].lat,coordinates[i].lng],{icon: new LeafIcon({iconUrl: '/public/img/'+coordinates[i].category+'.png'})}).bindTooltip(text,{direction: 'right'}).on('click',function(event){
+        $("#autor").html(coordinates[i].user);
+        $("#data").html(coordinates[i].date);
+        $("#categoria").html(coordinates[i].category);
+        $("#descricao").html(coordinates[i].marker);
+        let id = coordinates[i]._id;
+        $("#acoes").html('<button class="btn" id="resolver">Resolver</button><button class="btn" id="validar">Validar</button>');
+        $("#resolver").on('click', function() {
+          //remove(i);
+        })
+        $("#validar").on('click', function() {
+          //atualizar(id,'validated');
+        })
+        let relatos = "";
+
+        for(let j = 0; j < coordinates[i].comments.length; j++){
+          let comment = coordinates[i].comments[j];
+          if(comment.type == 'image'){
+            relatos += '<img class="img-relato full-width" src="'+comment.data+'"/>';
+          }else if(comment.type == 'audio'){
+            relatos += '<audio class="full-width" controls><source src="' + comment.data + '"></source></audio>';
+          }else{
+            relatos += '<div class="texto full-width">'+ comment.data + '</div>';
+          }
+        }
+        // relatos += "";
+        $("#relatos").html(relatos);
+      }).addTo(mymap);
+    }
+  </script>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="/public/map.js"></script>
+</body>
+
+</html>
